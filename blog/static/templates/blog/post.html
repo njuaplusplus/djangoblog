@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% load duoshuo_tags %}
 
-{% block title %}{{ article.title }}  | 博客 | 约书亚团契 {% endblock %}
+{% block title %}{{ article.title }} | 博客 | 安好{% endblock %}
 
 {% block pageHeader %}
     <!-- Page Header -->
@@ -59,7 +59,7 @@
 {% endblock mainContent %}
 
 {% block extScript %}
-$("article div.container img").addClass("img-responsive");
+$("article div.container img").addClass("img-responsive hcenter");
 $("article div.container pre").addClass("hll");
 $("article div.container h2").addClass("section-heading");
 {% endblock extScript%}

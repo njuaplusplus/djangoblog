@@ -87,6 +87,7 @@ class Article(models.Model) :
         verbose_name = _(u'发布日期'),
         help_text = _(u' ')
     )
+    is_public = models.BooleanField(verbose_name = _(u'公开博客'))
     is_approved = models.BooleanField(verbose_name = _(u'通过审核'))
 
     class Meta:
@@ -101,6 +102,8 @@ class Article(models.Model) :
             self.slug = uuslug(self.title, instance=self, max_length=32, word_boundary=True)
         if self.is_approved is None:
             self.is_approved = False
+        if self.is_public is None:
+            self.is_public = False
         self.content_markup = markdown(self.content_markdown, ['codehilite', 'attr_list'])
         super(Article, self).save(*args, **kwargs)
 

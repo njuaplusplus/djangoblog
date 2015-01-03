@@ -9,3 +9,8 @@
 a.post-category:hover, a.post-category:focus {
     color: #fff;
 }
+
+img.hcenter {
+    margin-left: auto;
+    margin-right: auto;
+}
