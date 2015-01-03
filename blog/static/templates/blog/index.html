@@ -1,0 +1,56 @@
+{% extends 'blog/base.html' %}
+{% load staticfiles %}
+
+{% block title %} 首页 | 博客 | 约书亚团契 {% endblock %}
+
+{% block pageHeader %}
+<header class="intro-header" style="background-image: url({% static 'blog/img/home-bg.jpg' %})">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>约书亚博客</h1>
+                        <hr class="small">
+                        <span class="subheading">这是我们的部落格</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+{% endblock pageHeader %}
+
+{% block mainContent %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                {% for article in articles %}
+                <div class="post-preview">
+                    <a href="{% url 'blog:single_post' slug=article.slug %}">
+                        <h2 class="post-title">
+                            {{ article.title }}
+                        </h2>
+                        <h3 class="post-subtitle">
+                            {{ article.excerpt }}
+                        </h3>
+                    </a>
+                    <p class="post-meta">由 <a href="#">{{ article.author }}</a> 发布于 {{ article.date_publish }}</p>
+                </div>
+                <hr>
+                {% endfor %}
+                <!-- Pager -->
+                <ul class="pager">
+                    {% if articles.has_previous %}
+                    <li class="previous">
+                        <a href="{% url 'blog:index_page' page_num=articles.previous_page_number %}">&larr; 上一页</a>
+                    </li>
+                    {% endif %}
+                    {% if articles.has_next %}
+                    <li class="next">
+                        <a href="{% url 'blog:index_page' page_num=articles.next_page_number %}">下一页 &rarr;</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock mainContent %}
