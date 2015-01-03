@@ -1,6 +1,7 @@
 {% extends 'blog/base.html' %}
 {% load staticfiles %}
 {% load duoshuo_tags %}
+{% load has_group %}
 
 {% block title %}{{ article.title }} | 博客 | 安好{% endblock %}
 
@@ -47,6 +48,13 @@
                     {{ article.content_markup|safe }}
                 </div>
             </div>
+            {% if user|has_group:'authors' and user == article.author %}
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <a href="{% url 'blog:edit_post_view' post_id=article.id %}" style="font-size: 20px;">编辑本文</a>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </article>
     <div class="container">

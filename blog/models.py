@@ -117,7 +117,7 @@ class ArticleForm(forms.ModelForm):
             'todayBtn' : 'true',
         }
         widgets = {
-            'content_markdown' : PagedownWidget(),
+            # 'content_markdown' : PagedownWidget(),
             # 'date_publish' : DateTimePicker(options={"format": "YYYY-MM-DD HH:mm", "pickSeconds": False, "language": 'zh-cn', }),
             'date_publish' : DateTimeWidget(usel10n=True, bootstrap_version=3, options = dateTimeOptions),
             'title' : forms.TextInput(attrs={'class':'form-control'}),
@@ -127,3 +127,15 @@ class ArticleForm(forms.ModelForm):
         }
         exclude = ['content_markup', 'author', 'is_approved', ]
 
+from django.contrib.auth.models import User
+
+# Create your models here.
+
+class User_Profile(models.Model):
+    user = models.OneToOneField(User, related_name='profile')
+    duoshuo_id = models.IntegerField(default=0)
+    token = models.IntegerField(default=0)
+    avatar = models.URLField(blank=True, null=True)
+
+    def __unicode__(self):
+        return self.user.username

@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load has_group %}
 <!DOCTYPE html>
 <html lang="zh-cn">
     <head>
@@ -77,6 +78,11 @@
                         <li>
                             <a href="{% url 'blog:index' %}" style="font-size: 20px;">首页</a>
                         </li>
+                        {% if user|has_group:'authors' %}
+                        <li>
+                            <a href="{% url 'blog:write_post_view' %}" style="font-size: 20px;">撰写</a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
                 <!-- /.navbar-collapse -->
