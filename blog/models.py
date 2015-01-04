@@ -3,7 +3,8 @@
 
 from django.db import models
 from django.utils.translation import ugettext as _
-from markdown import markdown
+# from markdown import markdown
+import markdown
 from django.contrib.auth.models import User
 from uuslug import uuslug
 from django import forms
@@ -40,6 +41,31 @@ class Category(models.Model) :
     def __unicode__(self):
         return "%s" % (self.title,)
 
+class MyImage(models.Model):
+    ''' Image storage for the post'''
+    image = models.ImageField(
+        verbose_name = _(u'图片'),
+        help_text = _(u' '),
+        upload_to='blogs/images/%Y/%m/%d',
+    )
+    title = models.CharField(
+        verbose_name = _(u'标题'),
+        help_text = _(u' '),
+        max_length = 100
+    )
+    description = models.TextField(
+        verbose_name = _(u'描述'),
+        help_text = _(u' '),
+        blank = True
+    )
+    class Meta:
+        app_label = _(u'blog')
+        verbose_name = _(u"Image")
+        verbose_name_plural = _(u"Images")
+        ordering = ['title',]
+    def __unicode__(self):
+        return "%s" % (self.title,)
+
 class Article(models.Model) :
     """Article Model"""
     title = models.CharField(
@@ -63,10 +89,15 @@ class Article(models.Model) :
     excerpt = models.TextField(
         verbose_name = _(u'摘要'),
         help_text = _(u' '),
+        blank = True
+    )
+    images = models.ManyToManyField(
+        MyImage,
+        verbose_name = _(u'图片'),
+        help_text = _(u'向文章中插入图片'),
         null = True,
         blank = True
     )
-
     author = models.ForeignKey(User, verbose_name=_(u'作者'))
     content_markdown = models.TextField(
         verbose_name = _(u'内容 (Markdown)'),
@@ -89,6 +120,7 @@ class Article(models.Model) :
     )
     is_public = models.BooleanField(verbose_name = _(u'公开博客'))
     is_approved = models.BooleanField(verbose_name = _(u'通过审核'))
+    is_markuped = models.BooleanField(verbose_name = _(u'已经编译'))
 
     class Meta:
         app_label = _(u'blog')
@@ -104,8 +136,17 @@ class Article(models.Model) :
             self.is_approved = False
         if self.is_public is None:
             self.is_public = False
-        self.content_markup = markdown(self.content_markdown, ['codehilite', 'attr_list'])
+        if self.is_markuped is None:
+            self.is_markuped = False
+        # self.content_markup = markdown.markdown(self.content_markdown, ['codehilite', 'attr_list'])
         super(Article, self).save(*args, **kwargs)
+
+    def get_content_markup(self):
+        if not self.is_markuped:
+            self.is_markuped = True
+            self.content_markup = markdown_to_html(self.content_markdown, self.images.all())
+            self.save()
+        return self.content_markup
 
     def __unicode__(self):
         return "%s" % (self.title,)
@@ -124,8 +165,9 @@ class ArticleForm(forms.ModelForm):
             'slug' : forms.TextInput(attrs={'class':'form-control'}),
             'excerpt' : forms.Textarea(attrs={'class':'form-control'}),
             'categories' : forms.SelectMultiple(attrs={'class':'form-control'}),
+            'images' : forms.SelectMultiple(attrs={'class':'form-control'}),
         }
-        exclude = ['content_markup', 'author', 'is_approved', ]
+        exclude = ['content_markup', 'author', 'is_approved', 'is_markuped',]
 
 from django.contrib.auth.models import User
 
@@ -139,3 +181,12 @@ class User_Profile(models.Model):
 
     def __unicode__(self):
         return self.user.username
+
+def markdown_to_html(text, images):
+    '''Compile the text into html
+    '''
+    md = markdown.Markdown(extensions=['codehilite', 'attr_list'])
+    for img in images:
+        md.references[img.title] = (img.image.url, img.title)
+    print md.references
+    return md.convert(text)

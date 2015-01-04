@@ -143,8 +143,10 @@
         <script type="text/javascript">
         $(document).ready(function(){
             $("#id_content_markdown").markdown({autofocus:false,savable:false});
+            $("#id_images").select2({placeholder: "选择图片(多选)", dropdownAutoWidth: true});
             $("#id_categories").select2({placeholder: "选择分类(多选)", dropdownAutoWidth: true});
             $("div#div_categories div.text-muted.pull-right").remove();
+            $("div#div_images div.text-muted.pull-right").remove();
                 //$("[href='{{request.path}}']").parent().addClass("active");
                 {% block extScript %}{% endblock %}
         });

@@ -138,6 +138,7 @@ def write_post_view(request):
         if article_form.is_valid():
             article = article_form.save(commit=False)
             article.author = request.user
+            print 'In write_post_view', article.id
             article.save()
             article_form.save_m2m()
             return HttpResponseRedirect(reverse('blog:single_post', args=(article.slug,)))
@@ -153,7 +154,10 @@ def edit_post_view(request, post_id):
     if request.method == 'POST':
         article_form = ArticleForm(request.POST, request.FILES, instance=article)
         if article_form.is_valid():
-            article_form.save()
+            article = article_form.save(commit=False)
+            article.is_markuped = False
+            article.save()
+            article_form.save_m2m()
             return HttpResponseRedirect(reverse('blog:single_post', args=(article.slug,)))
     else:
         article_form = ArticleForm(instance=article)
