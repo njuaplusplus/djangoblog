@@ -10,6 +10,11 @@ a.post-category:hover, a.post-category:focus {
     color: #fff;
 }
 
+a.edit-post {
+    color: #A074AE;
+    text-decoration: underline;
+}
+
 img.hcenter {
     margin-left: auto;
     margin-right: auto;

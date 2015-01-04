@@ -1,5 +1,6 @@
 {% load staticfiles %}
 {% load has_group %}
+{% load duoshuo_tags %}
 <!DOCTYPE html>
 <html lang="zh-cn">
     <head>
@@ -82,6 +83,18 @@
                         <li>
                             <a href="{% url 'blog:write_post_view' %}" style="font-size: 20px;">撰写</a>
                         </li>
+                        {% endif %}
+                        {% if not user.is_authenticated %}
+                            <li><a href="{% url 'blog:login_view' %}?next={{ request.path }}" style="font-size: 20px;">登录</a></li>
+                        {% else %}
+                            <li><a href="#" style="font-size: 20px;">
+                                {% if user.first_name or user.last_name %}
+                                {{ user.last_name|addstr:user.first_name|truncatechars:9  }}
+                                {% else %}
+                                {{ user.username|truncatechars:9 }}
+                                {% endif %}
+                            </a></li>
+                            <li><a href="{% url 'blog:logout_view' %}" style="font-size: 20px;">注销</a></li>
                         {% endif %}
                     </ul>
                 </div>
