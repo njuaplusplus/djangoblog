@@ -21,7 +21,13 @@
                     <div class="post-heading">
                         <h1>{{ article.title }}</h1>
                         <h2 class="subheading">{{ article.excerpt }}</h2>
-                        <span class="meta">由 <a href="#">{{ article.author }}</a> 发表于 {{ article.date_publish }}</span>
+                        <span class="meta">由 <a href="#">
+                                {% if article.author.first_name or article.author.last_name %}
+                                {{ article.author.last_name|addstr:article.author.first_name|truncatechars:9  }}
+                                {% else %}
+                                {{ article.author.username|truncatechars:9 }}
+                                {% endif %}
+                            </a> 发表于 {{ article.date_publish }}</span>
                     </div>
                 </div>
             </div>
